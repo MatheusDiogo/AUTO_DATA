@@ -1,0 +1,103 @@
+from os import remove
+import pandas as pd
+import numpy as np
+
+
+# Upload de Arquivo
+
+abreNDD = pd.read_csv("/content/NDD - DETRAN - 2022 - 02 - 01 a 31 a.csv")
+abreNDD.rename(columns={'SerialNumber' : 'Serie','PrinterModelName' : 'Modelo', 'StartCounterMono' : 'MedidorInicialMono','StartCounterColor' : 'MedidorInicialColor', 'EndCounterMono' : 'MedidorFinalMono', 'EndCounterColor' : 'MedidorFinalColor', 'CounterTypeName' : 'TipoDoContador' }, inplace = True)
+
+# Separando dados em listas 
+
+serie = abreNDD['Serie']
+modelo = abreNDD['Modelo']
+medidorInicialMono = abreNDD['MedidorInicialMono']
+medidorFinalMono = abreNDD['MedidorFinalMono']
+medidorInicialColor = abreNDD['MedidorInicialColor']
+medidorFinalColor = abreNDD['MedidorFinalColor']
+tipoContador = abreNDD['TipoDoContador']
+
+
+matriz = np.array([serie,modelo,medidorInicialMono,medidorFinalMono,medidorInicialColor,medidorFinalColor,tipoContador])
+matriz = matriz.T
+
+
+
+pos_series = 0
+pos_MedFinalMono = 3
+pos_MedFinalCor = 5
+pos_Medidor = 6
+
+valoresPrintMono = []
+valoresCopyMono = []
+valoresCopyCor = []
+valoresPrintCor = []
+valoresTotalCor = []
+valoresTotalMono = []
+seriesPrintMono = []
+seriesPrintCor = []
+seriesCopyMono = []
+seriesCopyCor = []
+seriesTotalMono = []
+seriesTotalCor = []
+PrintCopyMono = []
+
+
+
+#criando listas com medidores MONO
+for posicao in range(len(matriz)):
+   if((matriz[posicao][pos_Medidor] == 'Print') or (matriz[posicao][pos_Medidor] == "Total") or (matriz[posicao][pos_Medidor] == "Copy") or  (matriz[posicao][pos_Medidor] == "A3")):
+     if(matriz[posicao][pos_Medidor] == 'Print'):
+       valoresPrintMono.append(matriz[posicao][pos_MedFinalMono])
+       #seriesPrintMono.append(matriz[posicao][pos_series])
+       seriesPrintMono.append(matriz[posicao][pos_series])
+     elif(matriz[posicao][pos_Medidor] == 'Copy'):
+       valoresCopyMono.append(matriz[posicao][pos_MedFinalMono])
+       seriesCopyMono.append(matriz[posicao][pos_series])
+     elif(matriz[posicao][pos_Medidor] == 'Total'):
+       valoresTotalMono.append(matriz[posicao][pos_MedFinalMono])
+       seriesTotalMono.append(matriz[posicao][pos_series])
+
+#criando listas com medidores colorido
+for posicao in range(len(matriz)):
+   if((matriz[posicao][pos_Medidor] == 'Print') or (matriz[posicao][pos_Medidor] == "Total") or (matriz[posicao][pos_Medidor] == "Copy") or (matriz[posicao][pos_Medidor] == "A3" )):
+     if(matriz[posicao][pos_Medidor] == 'Print'):
+       valoresPrintCor.append(matriz[posicao][pos_MedFinalCor])
+       seriesPrintCor.append(matriz[posicao][pos_series])
+     elif(matriz[posicao][pos_Medidor] == 'Copy'):
+       valoresCopyCor.append(matriz[posicao][pos_MedFinalCor])
+       seriesCopyCor.append(matriz[posicao][pos_series])
+     elif(matriz[posicao][pos_Medidor] == 'Total'):
+       valoresTotalCor.append(matriz[posicao][pos_MedFinalCor])
+       seriesTotalCor.append(matriz[posicao][pos_series])
+
+
+
+for i in range(len(seriesPrintMono)):
+  for j in range(len(seriesCopyMono)):
+    if((seriesPrintMono[i] == seriesCopyMono[j])):
+      soma_PC = valoresPrintMono[i] + valoresCopyMono[j]   
+      PrintCopyMono.append(soma_PC)
+
+
+print()
+
+#final = list(map(lambda mp,mc: mp+mc, valoresPrintMono,valoresCopyMono))
+
+
+
+#print(valoresPrintMono)
+#print(valoresPrintCor)           
+#print(valoresCopyMono)
+#print(valoresCopyCor)
+#print(valoresTotalMono)
+#print(valoresTotalCor)
+#print(seriesPrintCor)
+#print(seriesPrintMono)
+#print(seriesCopyCor)
+#print(seriesCopyMono)
+#print(seriesTotalMono)
+#print(seriesTotalCor)
+#print(len(seriesTotalCor))
+#print(matriz)
